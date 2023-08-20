@@ -69,8 +69,7 @@ export const CalendarModal = () => {
     setformSubmited(false)
   };
   useEffect(() => {
-    if (activeEvent !== null) {
-      console.log(activeEvent);
+    if (activeEvent !== null) { 
       setformValues({ ...activeEvent });
     }
   }, [activeEvent]);

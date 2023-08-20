@@ -8,13 +8,11 @@ import {
 export const useCalendarStore = () => {
   const dispatch = useDispatch();
   const { events, activeEvent } = useSelector((state) => state.calendar);
-  const onSetActiveEvent = (calendarEvent) => {
-    console.log({ calendarEvent });
+  const onSetActiveEvent = (calendarEvent) => { 
     dispatch(onSliceSetActiveEvent(calendarEvent));
   };
   const onStartAddNewEvent = async (calendarEvent) => {
-    //TODO: MANDAR AL BACKENND
-    console.log({ calendarEvent });
+    //TODO: MANDAR AL BACKENND 
     //TODO BIEN
     if (calendarEvent._id) {
       //* Actualizando
