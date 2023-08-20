@@ -25,7 +25,7 @@ const customStyles = {
 
 export const CalendarModal = () => {
   const { isDateModalOpen, closeDateModal } = useUiStore();
-  const { activeEvent, onStartAddNewEvent } = useCalendarStore();
+  const { activeEvent, onStartSaveEvent } = useCalendarStore();
   const [formSubmited, setformSubmited] = useState(false);
   const [formValues, setformValues] = useState({
     title: "Samuel",
@@ -64,7 +64,7 @@ export const CalendarModal = () => {
     }
     if (formValues.title.trim().length === 0) return;
     // TODO
-    await onStartAddNewEvent(formValues);
+    await onStartSaveEvent(formValues);
     closeDateModal();
     setformSubmited(false)
   };

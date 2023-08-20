@@ -14,8 +14,7 @@ export const AppRouter = () => {
 
   if (status === "checking") {
     return <h3>Cargando</h3>;
-  }
-  console.log({ status });
+  } 
   return (
     <Routes>
       {status === "not-authenticated" ? (

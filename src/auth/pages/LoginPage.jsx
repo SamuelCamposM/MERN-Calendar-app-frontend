@@ -5,8 +5,8 @@ import "./LoginPage.css";
 import { useEffect } from "react";
 
 const loginFormFields = {
-  loginEmail: "",
-  loginPassword: "",
+  loginEmail: "s.cmelara12@gmail.com",
+  loginPassword: "123456",
 };
 const loginFormValidations = {
   loginEmail: [

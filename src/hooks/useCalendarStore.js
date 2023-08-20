@@ -4,28 +4,67 @@ import {
   onSliceAddNewEvent,
   onSliceUpdateEvent,
   onSliceDeleteEvent,
+  onSliceSetEvents,
 } from "../store";
+import { calendarApi } from "../api";
+import { convertEventsDate } from "../calendar/helpers";
+import Swal from "sweetalert2";
 export const useCalendarStore = () => {
   const dispatch = useDispatch();
   const { events, activeEvent } = useSelector((state) => state.calendar);
-  const onSetActiveEvent = (calendarEvent) => { 
+  const onSetActiveEvent = (calendarEvent) => {
     dispatch(onSliceSetActiveEvent(calendarEvent));
   };
-  const onStartAddNewEvent = async (calendarEvent) => {
-    //TODO: MANDAR AL BACKENND 
-    //TODO BIEN
-    if (calendarEvent._id) {
-      //* Actualizando
-      dispatch(onSliceUpdateEvent({ ...calendarEvent }));
-    } else {
+  const onStartSaveEvent = async (calendarEvent) => {
+    try {
+      if (calendarEvent.id) {
+        //* Actualizando
+        const { data } = await calendarApi.put(
+          `/events/${calendarEvent.id}`,
+          calendarEvent
+        );
+        return dispatch(
+          onSliceUpdateEvent({ ...calendarEvent, user: data.evento.user })
+        );
+      }
+
+      const { data } = await calendarApi.post("/events", calendarEvent);
+
       dispatch(
-        onSliceAddNewEvent({ ...calendarEvent, _id: new Date().getTime() })
+        onSliceAddNewEvent({
+          ...calendarEvent,
+          id: data.evento.id,
+          user: data.evento.user,
+        })
       );
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error al guardar", error.response.data?.msg, "error");
     }
   };
   const onStartDeleteEvent = async () => {
-    // TODO MANDAR AL BACKEND
-    await dispatch(onSliceDeleteEvent());
+    try {
+      // TODO MANDAR AL BACKEND
+      await calendarApi.delete(
+        `/events/${activeEvent.id}`,
+        activeEvent
+      );
+      await dispatch(onSliceDeleteEvent());
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Error al guardar", error.response.data?.msg, "error");
+    }
+  };
+
+  const onStartLoadingEvents = async () => {
+    try {
+      const { data } = await calendarApi.get("/events");
+      dispatch(onSliceSetEvents(convertEventsDate(data.eventos)));
+      console.log(convertEventsDate(data.eventos));
+    } catch (error) {
+      console.log(error);
+      console.log("error");
+    }
   };
   return {
     //*PROPIEDADES
@@ -34,7 +73,8 @@ export const useCalendarStore = () => {
     hasEventSelected: !!activeEvent,
     //*EVENTOS
     onSetActiveEvent,
-    onStartAddNewEvent,
+    onStartSaveEvent,
     onStartDeleteEvent,
+    onStartLoadingEvents,
   };
 };
